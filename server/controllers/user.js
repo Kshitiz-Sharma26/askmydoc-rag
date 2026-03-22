@@ -82,7 +82,7 @@ export async function signup(req, resp) {
 
     const password_hash = await bcrypt.hash(password, 5);
     const created_user =
-      await queryTool`INSERT INTO "User"(email, password) VALUES(${username}, ${password_hash})`;
+      await queryTool`INSERT INTO "User"(email, password) VALUES(${username}, ${password_hash}) RETURNING *`;
 
     return resp.status(200).json({
       data: { id: created_user[0].id },

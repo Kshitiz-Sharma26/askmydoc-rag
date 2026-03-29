@@ -116,33 +116,36 @@ export default function ChatPanel({
         >
           <Menu className="w-6 h-6" />
         </button>
-        <div className="w-20 h-20 rounded-full bg-slate-200 border-4 border-slate-100 flex items-center justify-center mb-6 shadow-inner">
-          <LockKeyhole className="w-10 h-10 text-slate-400" />
+        <div className="w-20 h-20 rounded-[20px] bg-white border border-slate-100 flex items-center justify-center mb-6 shadow-sm">
+          <LockKeyhole className="w-8 h-8 text-slate-300" />
         </div>
-        <h3 className="text-2xl font-bold text-slate-600 tracking-tight">
-          Chat Locked
+        <h3 className="text-xl lg:text-2xl font-bold text-slate-900 tracking-tight">
+          Welcome to Ask My Doc
         </h3>
-        <p className="mt-3 max-w-sm text-slate-500 font-medium">
-          Upload a report and wait for it to be ready to start asking questions.
+        <p className="mt-3 max-w-sm text-slate-500">
+          Please upload a medical report to unlock the chat.
+          <span className="md:hidden block mt-4 text-slate-400 text-sm">
+            To begin, tap the menu in the top left and select upload.
+          </span>
         </p>
       </div>
     );
   }
 
   return (
-    <div className="w-full md:w-2/3 h-full bg-slate-50 flex flex-col relative">
-      <div className="px-4 sm:px-8 py-5 border-b border-slate-200 bg-white shadow-sm z-10 flex items-center gap-4">
+    <div className="w-full md:w-2/3 h-full bg-transparent flex flex-col relative">
+      <div className="px-4 sm:px-8 py-5 border-b border-slate-100 bg-white z-10 flex items-center gap-4">
         <button
           onClick={onMenuClick}
-          className="p-2 -ml-2 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors border border-slate-200 md:hidden text-slate-600 focus:outline-none shrink-0"
+          className="p-2 -ml-2 bg-white rounded-xl hover:bg-slate-50 transition-colors border border-slate-100 md:hidden text-slate-600 focus:outline-none shrink-0"
         >
           <Menu className="w-5 h-5" />
         </button>
         <div>
-          <h2 className="text-xl font-bold text-slate-800 tracking-tight">
+          <h2 className="text-xl font-bold text-slate-900 tracking-tight">
             Ask My Doc
           </h2>
-          <p className="text-sm text-slate-500 font-medium hidden sm:block">
+          <p className="text-sm text-slate-500 hidden sm:block">
             Ask questions about your uploaded reports
           </p>
         </div>
@@ -160,16 +163,18 @@ export default function ChatPanel({
               className={`flex max-w-[85%] ${msg.role === "user" ? "self-end" : "self-start"}`}
             >
               {msg.role === "assistant" && (
-                <div className="w-8 h-8 rounded-full bg-blue-100 shrink-0 flex items-center justify-center mr-3 mt-1 shadow-sm border border-blue-200">
-                  <span className="text-blue-600 font-bold text-xs">AI</span>
+                <div className="w-8 h-8 rounded-[10px] bg-slate-100 shrink-0 flex items-center justify-center mr-3 mt-1 border border-slate-200/50">
+                  <span className="text-slate-600 font-bold text-[10px]">
+                    AI
+                  </span>
                 </div>
               )}
               <div className="flex flex-col gap-2">
                 <div
-                  className={`p-4 rounded-2xl shadow-sm ${
+                  className={`p-4 rounded-[12px] sm:rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] ${
                     msg.role === "user"
-                      ? "bg-blue-600 text-white rounded-br-none"
-                      : "bg-white border border-slate-200 text-slate-800 rounded-bl-none"
+                      ? "bg-blue-600 text-white rounded-br-[4px] sm:rounded-br-[6px]"
+                      : "bg-white border border-slate-100 text-slate-800 rounded-bl-[4px] sm:rounded-bl-[6px]"
                   }`}
                 >
                   {msg.role === "assistant" && index === messages.length - 1 ? (
@@ -189,7 +194,7 @@ export default function ChatPanel({
                       {msg.sources.map((src) => (
                         <div
                           key={src.id}
-                          className="flex items-center bg-slate-200/50 border border-slate-200 text-slate-500 text-[11px] font-medium px-2 py-1 rounded-full"
+                          className="flex items-center bg-slate-50 border border-slate-100 text-slate-500 text-[11px] font-medium px-2 py-1 rounded-md"
                         >
                           <FileText className="w-3 h-3 mr-1" />
                           <span className="truncate max-w-[150px]">
@@ -205,18 +210,18 @@ export default function ChatPanel({
         )}
         {loading && (
           <div className="flex max-w-[85%] self-start">
-            <div className="w-8 h-8 rounded-full bg-blue-100 shrink-0 flex items-center justify-center mr-3 mt-1 shadow-sm border border-blue-200">
-              <span className="text-blue-600 font-bold text-xs">AI</span>
+            <div className="w-8 h-8 rounded-[10px] bg-slate-100 shrink-0 flex items-center justify-center mr-3 mt-1 border border-slate-200/50">
+              <span className="text-slate-600 font-bold text-[10px]">AI</span>
             </div>
-            <div className="p-4 rounded-2xl flex items-center bg-white border border-slate-200 rounded-bl-none shadow-sm">
+            <div className="p-4 rounded-[12px] sm:rounded-2xl rounded-bl-[4px] sm:rounded-bl-[6px] flex items-center bg-white border border-slate-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
               <div className="flex gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-blue-400 animate-bounce"></div>
+                <div className="w-1.5 h-1.5 rounded-full bg-slate-300 animate-bounce"></div>
                 <div
-                  className="w-2 h-2 rounded-full bg-blue-400 animate-bounce"
+                  className="w-1.5 h-1.5 rounded-full bg-slate-300 animate-bounce"
                   style={{ animationDelay: "150ms" }}
                 ></div>
                 <div
-                  className="w-2 h-2 rounded-full bg-blue-400 animate-bounce"
+                  className="w-1.5 h-1.5 rounded-full bg-slate-300 animate-bounce"
                   style={{ animationDelay: "300ms" }}
                 ></div>
               </div>
@@ -226,7 +231,7 @@ export default function ChatPanel({
         <div ref={chatEndRef} />
       </div>
 
-      <div className="p-4 sm:p-6 bg-white border-t border-slate-200 z-10 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.05)]">
+      <div className="p-4 sm:p-6 bg-white border-t border-slate-100 z-10">
         <form
           onSubmit={handleSubmit}
           className="relative max-w-4xl mx-auto flex items-center"
@@ -237,12 +242,12 @@ export default function ChatPanel({
             onChange={(e) => setQuery(e.target.value)}
             disabled={loading}
             placeholder="E.g., What does my blood test say about cholesterol?"
-            className="w-full bg-slate-100 border-none rounded-full pl-6 pr-14 py-4 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 shadow-inner"
+            className="w-full bg-white border border-slate-200 rounded-2xl pl-6 pr-14 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-slate-300 focus:ring-4 focus:ring-slate-50 transition-all shadow-sm"
           />
           <button
             type="submit"
             disabled={loading || !query.trim()}
-            className="absolute right-2 p-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white rounded-full transition-transform active:scale-95 shadow-md shadow-blue-500/20 disabled:shadow-none"
+            className="absolute right-2 p-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-100 disabled:text-slate-300 text-white rounded-xl transition-all active:scale-95 shadow-sm"
           >
             <Send className="w-5 h-5 ml-0.5" />
           </button>

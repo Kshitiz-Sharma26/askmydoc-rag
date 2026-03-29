@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import PrivateRoutes from "./utility/PrivateRoutes";
 import { GlobalContext } from "./context/GlobalContextProvider";
 import Loader from "./components/Loader";
+import PublicRoutes from "./utility/PublicRoutes";
 
 function App() {
   const { state } = useContext(GlobalContext);
@@ -17,8 +18,10 @@ function App() {
         <Route element={<PrivateRoutes />}>
           <Route path="/" element={<Home />} />
         </Route>
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
+        <Route element={<PublicRoutes />}>
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
+        </Route>
       </Routes>
     </>
   );

@@ -1,7 +1,11 @@
 import getVectorDBClient from "../database/vectordb-connection.js";
 import getQueryTool from "../database/db-connection.js";
 import { makeEmbeddings } from "../utils/common.js";
-import { groq, getSystemPrompt } from "../utils/common.js";
+import {
+  groq,
+  getSystemPrompt,
+  rewriteQueryWithHistory,
+} from "../utils/common.js";
 
 const vectordbClient = getVectorDBClient();
 
@@ -28,7 +32,10 @@ export async function searchQuery(req, resp) {
 
   try {
     // Embed the query
-    const [query_embedding] = await makeEmbeddings([{ pageContent: query }]);
+    const standAloneQuery = await rewriteQueryWithHistory(query, parsedHistory);
+    const [query_embedding] = await makeEmbeddings([
+      { pageContent: standAloneQuery },
+    ]);
 
     // Search Qdrant
     const vectordbResponse = await vectordbClient.query("med-reports", {
@@ -36,7 +43,7 @@ export async function searchQuery(req, resp) {
       filter: {
         must: [{ key: "user_id", match: { value: parseInt(user_id) } }],
       },
-      limit: 14,
+      limit: 8,
       with_payload: true,
       score_threshold: 0.5,
     });
@@ -78,6 +85,7 @@ export async function searchQuery(req, resp) {
         { role: "user", content: query },
       ],
       temperature: 0.2,
+      max_tokens: 512,
     });
 
     const system_response = response?.choices?.[0];

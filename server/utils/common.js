@@ -28,3 +28,25 @@ Guidelines:
 Context from the report:
 ${context}`;
 }
+
+export async function rewriteQueryWithHistory(query, history) {
+  if (history.length === 0) return query; // no rewrite needed
+
+  const rewritePrompt = `Given this conversation history and a follow-up question, 
+rewrite the follow-up into a single standalone question that contains all necessary context.
+Do NOT answer it — only rewrite it.
+
+History:
+${history.map((m) => `${m.role}: ${m.content}`).join("\n")}
+
+Follow-up: ${query}
+Standalone question:`;
+
+  const response = await groq.chat.completions.create({
+    model: "llama-3.3-70b-versatile",
+    messages: [{ role: "user", content: rewritePrompt }],
+    max_tokens: 100,
+  });
+
+  return response.choices[0].message.content.trim();
+}

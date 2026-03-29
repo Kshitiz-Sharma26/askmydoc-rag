@@ -9,6 +9,18 @@ const queryTool = getQueryTool();
 
 export async function getToken(req, res) {
   const refresh_token = req.cookies["med-refresh"];
+  const access_token = req.cookies["med-access"];
+
+  try {
+    const decoded_jwt = jwt.verify(access_token ?? "", jwt_secret);
+    return res.status(200).json({
+      data: {
+        email: decoded_jwt.email,
+        id: decoded_jwt.id,
+      },
+      message: "Valid access token.",
+    });
+  } catch {}
 
   if (!refresh_token) {
     return res.status(401).json({ message: "User not logged in." });
@@ -132,7 +144,7 @@ export async function login(req, resp) {
         id,
       },
       jwt_secret,
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
 
     // Access token: Expires in 30 minutes
@@ -142,7 +154,7 @@ export async function login(req, resp) {
         id,
       },
       jwt_secret,
-      { expiresIn: "30m" }
+      { expiresIn: "30m" },
     );
     await queryTool`UPDATE "User" set refresh_token = ${refresh_token} WHERE id = ${id}`;
     resp.cookie("med-access", access_token, {

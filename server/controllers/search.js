@@ -1,4 +1,5 @@
 import getVectorDBClient from "../database/vectordb-connection.js";
+import getQueryTool from "../database/db-connection.js";
 import { makeEmbeddings } from "../utils/common.js";
 import { groq, getSystemPrompt } from "../utils/common.js";
 
@@ -7,8 +8,8 @@ const vectordbClient = getVectorDBClient();
 const MAX_HISTORY_TURNS = 6; // 3 user + 3 assistant
 
 export async function searchQuery(req, resp) {
-  const { id: user_id = 1, query, history } = req.body;
-
+  const { query, history } = req.body;
+  const { id: user_id } = req.user;
   // Input validation
   if (!query?.trim()) {
     return resp.status(400).json({ message: "Query is required." });
@@ -45,9 +46,26 @@ export async function searchQuery(req, resp) {
       ?.filter(Boolean) // remove undefined chunks
       ?.join("\n\n");
 
+    const uniqueFileIds = [
+      ...new Set(
+        vectordbResponse.points?.map((p) => p.payload?.file_id).filter(Boolean),
+      ),
+    ];
+    let sources = [];
+    if (uniqueFileIds.length > 0) {
+      const queryTool = getQueryTool();
+      const filesResp =
+        await queryTool`SELECT id, name FROM "File" WHERE id = ANY(${uniqueFileIds}) AND user_id = ${parseInt(user_id)}`;
+      sources = filesResp;
+    }
+
     if (!context) {
       return resp.status(200).json({
-        message: "I couldn't find relevant information in your report.",
+        data: {
+          message: "I couldn't find relevant information in your report.",
+          sources: [],
+        },
+        message: "Query searched successfully.",
       });
     }
 
@@ -73,7 +91,11 @@ export async function searchQuery(req, resp) {
     }
 
     return resp.status(200).json({
-      message: system_response.message.content,
+      data: {
+        message: system_response.message.content,
+        sources,
+      },
+      message: "Query searched successfully.",
     });
   } catch (err) {
     console.error("searchQuery error:", err);

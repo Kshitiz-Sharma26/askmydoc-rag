@@ -11,7 +11,8 @@ const vectordbClient = getVectorDBClient();
 
 export async function uploadFile(req, resp) {
   try {
-    req.body.id = 1;
+    const userId = req.user.id;
+
     const text = await readPDF(req.file.path);
 
     const splitter = new RecursiveCharacterTextSplitter({
@@ -22,10 +23,9 @@ export async function uploadFile(req, resp) {
     const docs = await splitter.createDocuments([text]);
     // Make embeddings from documents created from PDF content
     const query_embeddings = await makeEmbeddings(docs);
-    console.log("Made");
 
     const created_file =
-      await queryTool`INSERT INTO "File"(name, user_id) VALUES(${req.file.originalname}, ${req.body.id}) RETURNING *`;
+      await queryTool`INSERT INTO "File"(name, user_id) VALUES(${req.file.originalname}, ${userId}) RETURNING *`;
     console.log(created_file);
     const upload_file_id = created_file[0].id;
 
@@ -34,7 +34,7 @@ export async function uploadFile(req, resp) {
         id: uuidv4(),
         vector,
         payload: {
-          user_id: req.body.id,
+          user_id: userId,
           file_id: upload_file_id,
           content: docs[ind].pageContent,
         },
@@ -59,8 +59,20 @@ export async function uploadFile(req, resp) {
   });
 }
 
+export async function getFiles(req, resp) {
+  try {
+    const userId = req.user.id;
+    const files =
+      await queryTool`SELECT id, name FROM "File" WHERE user_id = ${userId}`;
+    return resp.status(200).json({ data: { files } });
+  } catch (err) {
+    console.error("getFiles error:", err);
+    return resp.status(500).json({ message: "Internal server error." });
+  }
+}
+
 export async function deleteFile(req, resp) {
-  const userId = parseInt(req.body.id); // or +req.user.id
+  const userId = parseInt(req.user.id); // or +req.user.id
   const fileId = parseInt(req.params.id); // or +req.params.fileId
   console.log(userId, fileId);
 

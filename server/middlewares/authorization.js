@@ -13,11 +13,13 @@ const authorization = (req, resp, next) => {
   }
   try {
     const decoded = jwt.verify(access_token, jwt_secret);
-    req.body.id = decoded.id;
+    req.user = {
+      id: decoded.id,
+    };
     next();
   } catch (err) {
     if (err.name === "TokenExpiredError") {
-      return resp.status(401).json({
+      return resp.status(403).json({
         message: "Access token expired.",
       });
     }

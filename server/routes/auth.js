@@ -7,4 +7,4 @@ export const router = Router();
 router.post("/login", login);
 router.post("/signup", signup);
 router.delete("/logout", logout);
-router.get("/refresh-token", getToken);
+router.get("/check-token", getToken);

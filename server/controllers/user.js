@@ -59,12 +59,14 @@ export async function getToken(req, res) {
   res.cookie("med-access", new_access_token, {
     maxAge: 30 * 60 * 1000, // 30 min in ms
     httpOnly: true,
-    sameSite: "Strict",
+    secure: true, // required for cross-domain
+    sameSite: "None", // required for cross-domain
   });
   res.cookie("med-refresh", new_refresh_token, {
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in ms
     httpOnly: true,
-    sameSite: "Strict",
+    secure: true, // required for cross-domain
+    sameSite: "None", // required for cross-domain
   });
 
   return res.status(200).json({
@@ -160,12 +162,14 @@ export async function login(req, resp) {
     resp.cookie("med-access", access_token, {
       maxAge: 30 * 60 * 1000,
       httpOnly: true,
-      sameSite: "Strict",
+      secure: true, // required for cross-domain
+      sameSite: "None", // required for cross-domain
     });
     resp.cookie("med-refresh", refresh_token, {
       maxAge: 7 * 24 * 60 * 60 * 1000,
       httpOnly: true,
-      sameSite: "Strict",
+      secure: true, // required for cross-domain
+      sameSite: "None", // required for cross-domain
     });
 
     return resp.status(200).json({

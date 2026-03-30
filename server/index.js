@@ -11,12 +11,13 @@ import authorization from "./middlewares/authorization.js";
 configDotenv();
 
 const PORT = process.env.PORT;
+const CORS_ORIGIN = process.env.CORS_ORIGIN;
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(cors({credentials: true, origin: 'http://localhost:5173'}));
+app.use(cors({credentials: true, origin: CORS_ORIGIN}));
 
 app.use("/auth", authRouter);
 app.use("/file", authorization, fileRouter);

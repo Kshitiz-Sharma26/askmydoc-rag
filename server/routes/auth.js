@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getToken, login, logout, signup } from "../Controllers/user.js";
+import { getToken, login, logout, signup } from "../controllers/user.js";
 export const router = Router();
 
 // middleware that is specific to this router

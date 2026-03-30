@@ -208,9 +208,17 @@ export async function logout(req, resp) {
 
     await queryTool`UPDATE "User" set refresh_token = null WHERE id = ${id}`;
 
-    resp.clearCookie("med-access");
+    resp.clearCookie("med-access", {
+      httpOnly: true,
+      secure: true, // required for cross-domain
+      sameSite: "None", // required for cross-domain
+    });
 
-    resp.clearCookie("med-refresh");
+    resp.clearCookie("med-refresh", {
+      httpOnly: true,
+      secure: true, // required for cross-domain
+      sameSite: "None", // required for cross-domain
+    });
 
     return resp.status(200).json({
       message: "User logged out successfully",

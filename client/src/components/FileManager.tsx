@@ -51,6 +51,16 @@ export default function FileManager({
       return;
     }
 
+    if (file.size > 1 * 1024 * 1024) {
+      toast.error("Maximum allowed size is 1MB");
+      return;
+    }
+
+    if (files.some((f) => f.name === file.name && f.status !== "failed")) {
+      toast.error("File with same name is already present.");
+      return;
+    }
+
     // Add optimistic processing file
     const tempId = "temp-" + Date.now();
     setFiles((prev) => [
@@ -213,7 +223,11 @@ export default function FileManager({
           disabled={loggingOut}
           className="w-full flex items-center justify-center gap-2 p-3 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors font-medium text-sm focus:outline-none focus:ring-2 focus:ring-red-100 disabled:opacity-50"
         >
-          {loggingOut ? <Loader2 className="w-5 h-5 animate-spin" /> : <LogOut className="w-5 h-5" />}
+          {loggingOut ? (
+            <Loader2 className="w-5 h-5 animate-spin" />
+          ) : (
+            <LogOut className="w-5 h-5" />
+          )}
           <span>Sign Out</span>
         </button>
       </div>

@@ -51,7 +51,7 @@ export default function FileManager({
       return;
     }
 
-    if (file.size > 1 * 1024 * 1024) {
+    if (file.size > 4 * 1024 * 1024) {
       toast.error("Maximum allowed size is 1MB");
       return;
     }

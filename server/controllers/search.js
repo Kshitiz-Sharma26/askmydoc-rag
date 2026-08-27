@@ -78,7 +78,7 @@ export async function searchQuery(req, resp) {
 
     // Call Groq
     const response = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
+      model: "openai/gpt-oss-120b",
       messages: [
         { role: "system", content: getSystemPrompt(context) },
         ...parsedHistory,
